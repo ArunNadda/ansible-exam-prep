@@ -1,3 +1,3 @@
 # ansible-exam-prep
 
-#### this repo has all note I make while prepare for Ansible exam (EX-407).
+#### This repo has all note I made while preparing for Ansible exam (EX-407).
