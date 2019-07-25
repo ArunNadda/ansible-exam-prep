@@ -1,0 +1,1 @@
+ansible control --list-hosts
