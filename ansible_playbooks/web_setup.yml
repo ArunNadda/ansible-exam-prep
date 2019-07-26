@@ -1,0 +1,51 @@
+---
+- name: playbook to setup a web server and db server
+  hosts: db
+  become: yes
+  become_user: root
+  become_method: sudo
+  tasks:
+    - block:
+        - name: install packages
+          package: 
+            name: "{{ item }}"
+            state: latest
+          with_items:
+            - firewalld
+            - httpd
+            - php
+            - php-mysql
+            - mariadb-server 
+
+    - block:
+        - name: enable and start services
+          service:
+            name: "{{ item }}"
+            state: started
+            enabled: yes
+          with_items:
+            - firewalld
+            - httpd
+
+    - block: 
+        - name: open http on firewall
+          firewalld:
+            service: http
+            permanent: yes
+            immediate: yes
+            state: enabled
+
+    - block:
+        - name: populate index.html
+          copy:
+            content: "This is a website create by ansible"
+            dest: /var/www/html/index.php 
+            mode: 0644
+
+- name: play to test the url
+  hosts: localhost
+  tasks:
+    - name: check if httpd is running on db
+      uri: 
+        url: http://10.0.10.211
+        status_code: 200

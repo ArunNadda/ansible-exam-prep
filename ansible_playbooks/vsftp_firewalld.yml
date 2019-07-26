@@ -1,7 +1,7 @@
 ---
 - name: playbook to install vsftp and firewalld on web servers
   hosts: web
-  remote_user: ec2-user
+  remote_user: centos
   become: true
   become_user: root
   become_method: sudo
@@ -14,13 +14,6 @@
         - vsftpd
         - firewalld
 
-    - name: allow ftp service
-      firewalld:
-        service: ftp
-        permanent: yes
-        state: enabled
-        immediate: yes
-
     - name: enable services
       service:
         name: "{{ item }}"
@@ -29,4 +22,12 @@
       with_items:
         - vsftpd
         - firewalld
+
+
+    - name: allow ftp service
+      firewalld:
+        service: ftp
+        permanent: yes
+        state: enabled
+        immediate: yes
 
