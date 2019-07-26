@@ -1,0 +1,11 @@
+---
+- name: playbook to install lftp package
+  hosts: localhost
+  become: true
+  become_user: root
+  tasks:
+    - name: install lftp package
+      package: 
+        name: lftp
+        state: latest
+           
