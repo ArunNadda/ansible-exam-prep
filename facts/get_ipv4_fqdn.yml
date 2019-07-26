@@ -1,0 +1,9 @@
+---
+- name: playbook to get ansible facts
+  hosts: all
+  tasks:
+    - name: print ansible facts
+      debug:
+        msg: > 
+          the default ipv4 address of {{ ansible_fqdn }}
+          is {{ ansible_default_ipv4.address }}

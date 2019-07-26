@@ -1,0 +1,48 @@
+---
+- name: this playbook show use of variables in playbook
+  hosts: web
+  become: true
+  vars:
+    web_pkg: httpd
+    fwl_pkg: firewalld
+    web_svc: httpd
+    fwl_svc: firewalld
+    python_pkg: python-httplib2
+    rule: http
+  tasks:
+    - name: install packages
+      package:
+        name: "{{ item }}"
+        state: installed
+      with_items:
+        - "{{ web_pkg }}"
+        - "{{ fwl_pkg }}"
+        - "{{ python_pkg }}"
+    - name: start and enabled services
+      service:
+        name: "{{ item }}"
+        enabled: yes
+        state: started
+      with_items:
+        - "{{ web_svc }}"
+        - "{{ fwl_svc }}"
+
+    - name: populate index.html
+      copy:
+        content: "Web content using variables in playbook\n"
+        dest: /var/www/html/index.html
+
+    - name: open port for rule {{ rule }}
+      firewalld:
+        service: "{{ rule }}"
+        immediate: yes
+        permanent: yes
+        state: enabled
+
+- name: play to chck url web
+  hosts: localhost
+  tasks:
+    - name: confirm webserver is reachable
+      uri:
+        url: http://10.0.10.211
+        status_code: 200

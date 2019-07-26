@@ -1,0 +1,14 @@
+---
+- name: playbook shows output using register
+  hosts: web
+  become: true
+  tasks:
+    - name: install httpd package
+      package:
+        name: httpd
+        state: installed
+      register: install_result
+
+    - name: debug show
+      debug: 
+        var: install_result
