@@ -1,0 +1,64 @@
+---
+- name: lamp and file server playbook
+  hosts: mngd
+  become: true
+  tasks:
+
+    - name: install firewalld
+      package: 
+        name: firewalld
+        state: installed
+
+    - name: start firewalld
+      service: 
+        name: firewalld
+        state: started
+        enabled: yes
+
+- name: playbook for lamp
+  hosts: web 
+  become: true
+  tasks:
+    - name: include vars
+      include_vars: vars/allvars.yml
+
+    - name: import lamp tasks
+      import_tasks: tasks/lamp.yml
+
+    - name: open web port in service
+      firewalld:
+        service: http
+        state: enabled
+        immediate: yes
+        permanent: yes
+
+    - name: copy index.html to webroot
+      copy:
+        content: "{{ ansible_fqdn }}({{ ansible_default_ipv4.address }}) Managed by Ansible\n"
+        dest: "{{ web_root }}/index.html"
+        mode: 640
+
+- name: playbook for fileservers
+  hosts: web 
+  become: true
+  tasks:
+    - name: include vars
+      include_vars: vars/allvars.yml 
+
+    - name: import  fs task
+      import_tasks: tasks/file_server.yml
+
+    - name: open ftp port in service
+      firewalld:
+        service: ftp
+        state: enabled
+        immediate: yes
+        permanent: yes
+
+
+    - name: open smb port in service
+      firewalld:
+        service: samba 
+        state: enabled
+        immediate: yes
+        permanent: yes

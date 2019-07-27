@@ -1,0 +1,19 @@
+---
+- name: playbook to copy custom facts and use these
+  hosts: mngd
+  become: true
+  vars:
+    remote_dir: /etc/ansible/facts.d
+    fact_file: custom.fact
+  tasks:
+    - name: make sure remote dir exists on all nodes
+      file:
+        path: "{{ remote_dir }}"
+        state: directory
+        recurse: yes
+    - name: copy customer facts to all managed hosts
+      copy: 
+        src: "{{ fact_file }}"
+        dest: "{{ remote_dir }}"
+        mode: 660
+

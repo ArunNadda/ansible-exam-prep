@@ -1,0 +1,18 @@
+- name: install lamp packages
+  package:
+    name:
+      - "{{ ansible_local.custom.packages.db_package }}"
+      - "{{ ansible_local.custom.packages.web_package }}"
+    state: latest
+
+- name: enables and start db services
+  service:
+    name: "{{ ansible_local.custom.services.db_service }}"
+    enabled: yes
+    state: started
+
+- name: enables and start httpd services
+  service:
+    name: "{{ ansible_local.custom.services.web_service }}" 
+    enabled: yes
+    state: started

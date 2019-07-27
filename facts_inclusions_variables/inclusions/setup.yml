@@ -1,0 +1,16 @@
+---
+- name: deploy services
+  hosts: db
+  become: true
+  tasks:
+    - name: include/import task.yml
+      include: tasks.yml
+      vars:
+        package: samba
+        service: smb
+        state: started
+      register: output
+
+    - name: debugs the included tasks
+      debug:
+        var: output
