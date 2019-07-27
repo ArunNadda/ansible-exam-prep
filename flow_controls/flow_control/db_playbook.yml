@@ -1,0 +1,33 @@
+---
+- name: playbook to install and configure db on db nodes
+  hosts: all
+  become: true
+  vars:
+    db_package: mariadb-server
+    db_service: mariadb
+    db_users:
+      - db_admin
+      - db_user
+    configure_db_path: /etc/my.cnf
+
+  tasks:
+    - name: create users for DB
+      user:
+        name: "{{ item }}"
+      with_items: "{{ db_users }}"
+      when: inventory_hostname in groups['db']
+    
+    - name: install db server package
+      package:
+        name: "{{ db_package }}"
+        state: installed
+      when: db_package is defined
+
+    - name: configure DB server
+      import_tasks: configure_db.yml
+      vars:
+        extra_packages:
+          - mariadb-bench
+          - mariadb-libs
+          - mariadb-test
+      when: configure_db_path is defined

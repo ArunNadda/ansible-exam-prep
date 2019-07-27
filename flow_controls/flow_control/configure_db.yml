@@ -1,0 +1,21 @@
+- name: install extra packages
+  package:
+    name: "{{ extra_packages }}"
+    state: installed
+
+- name: get my.conf
+  get_url:
+    url: "https://raw.githubusercontent.com/just-containers/mariadb/master/rootfs/etc/mysql/my.cnf"
+    dest: "{{ configure_db_path }}"
+    owner: mysql
+    group: mysql
+    mode: 0644
+    seuser: system_u
+    setype: mysqld_etc_t
+    force: yes
+
+- name: start db service
+  service: 
+    name: "{{ db_service }}"
+    state: started
+    enabled: yes

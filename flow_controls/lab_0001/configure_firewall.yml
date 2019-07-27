@@ -1,0 +1,26 @@
+- name: install {{ fw_package }} package
+  package:
+    name: "{{ fw_package }}"
+    state: installed
+  tags:
+    - production
+
+- name: start {{ fw_service }} service
+  service:
+    name: "{{ fw_service }}"
+    state: started
+    enabled: yes
+  tags:
+    - production
+
+- name: open http and https in firewalld
+  firewalld:
+    service: "{{ item }}"
+    state: enabled
+    permanent: yes
+    immediate: yes
+  with_items:
+    - http
+    - https
+  tags:
+    - production

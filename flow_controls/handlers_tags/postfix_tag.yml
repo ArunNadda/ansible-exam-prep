@@ -1,0 +1,28 @@
+---
+- name: Install postfix
+  package: 
+    name: postfix
+    state: latest
+  tags:
+    - server
+  notify:
+    - start_postfix 
+
+- name: install dovecot
+  package:
+    name: dovecot
+    state: latest
+  tags:
+    - client
+  notify:
+    - start_dovecot
+
+- name: configure postfix
+  copy:
+    src: files/main.cf
+    dest: /etc/postfix/main.cf
+    backup: yes
+  tags:
+    - server
+  notify:
+    - restart_postfix

@@ -1,0 +1,47 @@
+- name: check if {{ web_package }} is installed
+  shell: rpm -q httpd
+  register: httpd_install_status
+  failed_when: httpd_install_status.rc == 1
+
+- block:
+    - name: get config file
+      get_url: 
+        url: "{{ https_uri }}"
+        dest: /etc/httpd/config.d/
+
+    - name: create direcotry under 
+      file:
+        path: /etc/httpd/conf.d/ssl
+        state: directory
+        mode: 0755
+
+    - name: create logs directory
+      file: 
+        path: /var/www/html/logs
+        state: directory
+        mode: 0755
+ 
+    - name: get ssl.conf stat
+      stat: 
+        path: /etc/httpd/conf.d/ssl.conf
+      register: file_exist
+   
+    - name: mv file
+      shell:
+        mv src: /etc/httpd/conf.d/ssl.conf /etc/httpd/conf.d/ssl.conf.bak
+      when: file_exist.stat exists
+
+    - name: copy ssl cofig
+      unarchive:
+        src: "{{ ssl_uri }}"
+        dest: /etc/httpd/conf.d/ssl/
+        copy: no
+      notify:
+        - restart_services
+
+    - name: index.html
+      copy:
+        content: "{{ ansible_hostname }} ({{ansible_default_ipv4.address }}) has been customized by Ansible"
+        dest: /var/www/html/index.html
+
+    when: httpd_install_status == 0

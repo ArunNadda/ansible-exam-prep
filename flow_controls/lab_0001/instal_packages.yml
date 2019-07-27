@@ -1,0 +1,15 @@
+- name: install {{ web_package }} and {{ ssl_package }}
+  package: 
+    name: "{{ item }}"
+    state: latest
+  with_items:
+    - "{{ web_package }}"
+    - "{{ ssl_package }}"
+  when: 
+    - inventory_host in groups['web'] 
+    - "{{ ansible_memory_mb.real.total }} > {{ memory }}"
+
+- name: start {{ web_service }} service
+  service: 
+    name: "{{ web_service }}"
+    state: started

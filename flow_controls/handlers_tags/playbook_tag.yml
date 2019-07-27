@@ -1,0 +1,26 @@
+---
+- name: playbook to configure mail server
+  hosts: all
+  become: true
+  tasks:
+    - name: include postfix yml
+      import_tasks: postfix_tag.yml
+      when: inventory_hostname in groups['web']
+
+  handlers:
+    - name: start_postfix
+      service:
+        name: postfix
+        state: started
+
+    - name: restart_postfix
+      service:
+        name: postfix
+        state: restarted
+
+    - name: start_dovecot
+      service:
+        name: dovecot
+        state: started
+
+     

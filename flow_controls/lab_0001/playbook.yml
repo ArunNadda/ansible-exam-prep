@@ -1,0 +1,45 @@
+- name: playbook for task control lab
+  hosts: web
+  become: true
+  tasks:
+    - block:
+        - import_tasks: install_packages.yml
+          vars:
+            memory: 256
+            web_package: httpd
+            ssl_package: mod_ssl
+            web_service: httpd
+
+        - import_tasks: configure_web.yml
+          vars:
+            https_uri: http://materials.example.com/task_control/https.conf
+            ssl_uri: http:/example.com/ssl.tar.gz
+          
+        - import_tasks: configure_firewall.yml
+          vars:
+            fw_package: firewalld
+            fw_service: firewalld
+          tags: production
+
+      rescue: 
+        name: isntall httpd
+        package:
+          name: httpd
+          state: installed
+        notify: restart_services
+
+
+      always:
+        name: check httpd
+        shell: systemctl status httpd
+        register: httpd_status
+
+
+  handlers:
+    - name: restart_services:
+      service:
+        name: "{{ item }}"
+        state: restarted
+      with_items;
+        - httpd
+        - firewalld
