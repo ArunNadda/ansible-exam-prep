@@ -1,0 +1,9 @@
+---
+- name: use complete items
+  user:
+    name: "{{ item.user }}"
+    state: present
+    group: "{{ item.group }}"
+  with_items:
+    - { user: 'anna', group: 'family' }
+    - { user: 'sim', group: 'kids' }

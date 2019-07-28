@@ -1,0 +1,17 @@
+---
+- name: playbook using vars and with_items
+  hosts: all
+  become: true
+  vars:
+    web_services: 
+      - httpd
+      - vsftpd
+
+  tasks:
+    - name: start web service
+      service:
+        name: "{{ item }}"
+        state: started
+        enabled: yes
+      with_items: "{{ web_services }}"
+  

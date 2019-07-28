@@ -1,0 +1,10 @@
+Listen {{ ansible_default_ipv4.address }}:443
+NameVirtualHost {{ ansible_fqdn }}
+
+<VirtualHost {{ ansible_fqdn:443 }}
+ServerName {{ ansible_fqdn }}
+DocumentRoot {{ web_root }}
+SSLEngine on
+SSLCertificateFile /etc/httpd/conf.d/ssl/server.crt
+SSLCertificateKeyFile /etc/httpd/conf.d/ssl/server.key
+</VirtualHost>

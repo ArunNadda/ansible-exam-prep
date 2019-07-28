@@ -1,0 +1,26 @@
+---
+- name: playbook showing nested loops
+  hosts: db
+  become: true
+  vars:
+    myusers:
+      - ana
+      - sim
+    mygroups:
+      - student
+      - junior
+  tasks:
+    - name: create groups
+      group:
+        name: "{{ item }}"
+        state: present
+      with_items: "{{ mygroups }}"
+   
+    - name: create users
+      user:
+        name: "{{ item[0] }}"
+        state: present
+        groups: "{{ item[1] }}"
+      with_nested:
+        - "{{ myusers }}"
+        - "{{ mygroups }}"

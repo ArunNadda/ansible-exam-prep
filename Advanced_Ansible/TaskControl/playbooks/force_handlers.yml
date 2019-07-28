@@ -1,0 +1,34 @@
+---
+- name: playbook with force handlers
+  hosts: web
+  become: true
+  force_handlers: yes
+  tasks:
+    - name: install httpd
+      package: 
+        name: httpd
+        state: installed
+
+    - name: start httpd
+      service:   
+        name: httpd
+        state: started
+        enabled: true
+
+    - name: copy index.html
+      copy:
+        src: /tmp/index.html
+        dest: /var/www/html/index.html
+        mode: 0640
+      notify: 
+        - restart_web
+    - name: copy nothing - will fail
+      copy: 
+        src: /tmp/nothing
+        dest: /var/www/html/nothing.html 
+
+  handlers:
+    - name: restart_web
+      service:
+        name: httpd
+        state: restarted

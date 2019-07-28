@@ -1,0 +1,23 @@
+---
+- name: playbook to remove httpd
+  hosts: all
+  become: true
+  tasks:
+    - name: stop httpd
+      service:
+        name: httpd
+        state: stopped
+      notify: remove_httpd
+     
+    - name: remove index.html
+      file:
+        path: /var/www/html/index.html
+        state: absent
+
+  handlers:
+    - name: remove_httpd
+      package:
+        name: httpd
+        state: absent
+
+   

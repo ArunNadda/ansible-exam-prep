@@ -1,0 +1,21 @@
+---
+- name: playbook to create user 
+  hosts: db
+  become: true
+  tasks: 
+    - name: create groups
+      group:
+        name: "{{ item }}"
+        state: present
+      with_items:
+        - student
+        - junior
+
+    - name: create user
+      user:
+        name: "{{ item.user }}"
+        state: present
+        groups: "{{ item.groups }}"
+      with_items: 
+        - { user: 'ana', groups: 'student' }
+        - { user: 'sim', groups: 'junior' }

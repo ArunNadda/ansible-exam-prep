@@ -1,0 +1,14 @@
+---
+- name: playbook to set motd using templates
+  hosts: all
+  become: true
+  vars:
+    system_owner: akn
+  tasks: 
+    - name: set motd on node {{ ansible_hostname }}
+      template:
+        src: motd.j2
+        dest: /etc/motd
+        owner: root
+        group: root
+        mode: 0644 

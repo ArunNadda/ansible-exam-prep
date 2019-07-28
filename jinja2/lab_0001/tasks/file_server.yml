@@ -1,0 +1,18 @@
+- name: install file service
+  package:
+    name:
+      - "{{ ansible_local.custom.packages.smb_package }}"
+      - "{{ ansible_local.custom.packages.ftp_package }}"
+    state: latest
+
+- name: enables and start services
+  service:
+    name: "{{ ansible_local.custom.services.smb_service}}"
+    enabled: yes
+    state: started
+
+- name: enables and start services
+  service:
+    name: "{{ ansible_local.custom.services.ftp_service}}" 
+    enabled: yes
+    state: started

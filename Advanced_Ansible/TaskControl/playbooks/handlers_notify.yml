@@ -1,0 +1,41 @@
+---
+- name: playbook to show handlers and notify
+  hosts: all
+  become: true
+  vars:
+    web_root: /var/www/html
+  tasks:
+    - name: create file index.html on localhost 
+      copy:
+        content: this is ansible managed web server
+        dest: /tmp/index.html
+      when: inventory_hostname == 'localhost' 
+    - block: 
+      - name: install httpd on web servers
+        package: 
+          name: httpd
+          state: installed
+      #  when: inventory_hostname in groups['web']
+
+      - name: start httpd
+        service:
+          name: httpd
+          state: started
+          enabled: yes
+      #  when: inventory_hostname in groups['web']
+
+
+      - name: copy index.html to web servers
+        copy:
+          src: /tmp/index.html
+          dest: "{{ web_root }}"
+          mode: 0640
+        notify: restart_httpd
+      when: inventory_hostname in groups['web']
+   
+  handlers:
+    - name: restart_httpd
+      service:
+        name: httpd
+        state: restarted
+         

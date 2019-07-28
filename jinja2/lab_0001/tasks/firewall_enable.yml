@@ -1,0 +1,20 @@
+---
+- name: install packages
+  package: 
+    name: "{{ fw_package }}"
+    state: latest
+
+- name: start {{ fw_service }}
+  service:
+    name: "{{ fw_service }}"
+    state: started
+
+- name: configure firewall
+  firewalld:
+    service: "{{ item }}"
+    state: enabled
+    immediate: true
+    permanent: true
+  with_items:
+    - http
+    - https

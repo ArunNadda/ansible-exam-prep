@@ -1,0 +1,23 @@
+---
+- name: playbook to show register variables and get values using loop
+  hosts: all
+  become: true
+  tasks:
+    - name: create bkp spooler dir
+      file: 
+        path: /var/bkpspool
+        state: directory
+
+    - name: retrieve list of home directories
+      shell: ls /home
+      register: home_dirs
+
+    - debug:
+        var: home_dirs
+  
+    - name: add home dirs to bkpspooler dir
+      file:
+        path: /var/bkpspool/{{ item }}
+        state: link
+        src: /home/{{ item}}
+      loop: "{{ home_dirs.stdout_lines }}"

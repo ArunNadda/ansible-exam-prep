@@ -1,0 +1,7 @@
+---
+- name: playbook to use tags
+  hosts: all
+  become: true
+  tasks:
+    - name: using tags
+       

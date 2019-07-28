@@ -1,0 +1,8 @@
+---
+- name: use with_items
+  package: 
+    name: "{{ item }}"
+    state: latest
+  with_items:
+    - httpd
+    - vsftpd
