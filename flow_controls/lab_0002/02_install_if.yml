@@ -1,0 +1,28 @@
+---
+- name: playbook to install httpd if db is running
+  hosts: db
+  become: true
+  tasks:
+    - name: check if mariadb running
+      command: systemctl is-active mariadb
+      register: db_status
+      ignore_errors: yes
+
+    - debug:
+        var: db_status
+
+    - block:
+      - name: install httpd if db is running
+        package: 
+          name: httpd
+          state: installed
+
+      - name: start httpd
+        service:
+          name: httpd
+          state: started
+          enabled: true
+
+      when: db_status.rc == 0
+
+

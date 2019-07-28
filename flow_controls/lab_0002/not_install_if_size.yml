@@ -1,0 +1,11 @@
+---
+- name: playbook to install db package if / is > 10G5
+  hosts: db
+  become: true
+  tasks:
+    - name: isntall db package if / is > 10G
+      package: 
+        name: mariadb-server
+        state: installed
+      with_items: "{{ ansible_mounts }}"
+      when: item.mount == "/" and item.size_available > 10000000000
