@@ -1,0 +1,69 @@
+---
+- name: main playbook
+  hosts: webserver,proxy
+  become: true
+  tasks:
+    - name: install httpd and firewalld
+      package: 
+        name: "{{ item }}"
+        state: present
+      with_items:
+        - httpd
+        - firewalld
+
+    - name: start httpd and firewalld
+      service:
+        name: "{{ item }}"
+        state: started
+      with_items:
+        - httpd
+        - firewalld
+ 
+    - name: enable http on firewall
+      firewalld:
+        service: http
+        state: enabled
+        permanent: yes
+        immediate: yes
+
+    - name: copy http conf
+      template:
+        src: templates/httpd.conf.j2
+        dest: /etc/httpd/conf.d/ansible.conf 
+        owner: root
+        group: root
+        mode: 0640
+      notify: 
+        - restart_httpd
+
+  handlers:
+    - name: restart_httpd
+      service:
+       name: httpd
+       state: restarted
+
+
+
+- name: deploy and configure proxy
+  hosts: webserver
+  become: true
+  tasks:
+    - name: stop apache proxy
+      service: 
+        name: httpd
+        state: stopped
+      delegate_to: "{{ item }}"
+      with_items: "{{ groups['proxy']}}"
+
+    - name: deploy webpages
+      template: 
+        src: templates/index.html.j2
+        dest: /var/www/html/index.html
+        mode: 0640
+
+    - name: start proxy
+      service: 
+        name: httpd
+        state: started
+      delegate_to: "{{ item }}"
+      with_items: "{{ groups['proxy']}}" 

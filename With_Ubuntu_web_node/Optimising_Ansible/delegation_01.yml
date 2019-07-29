@@ -1,0 +1,23 @@
+---
+- name: playbook for delegation check
+  hosts: all
+  become: true
+  tasks:
+    - name: get process info
+      command: hostname
+      register: remote_process
+      changed_when: false
+
+    - name: get delegate process info
+      command: hostname
+      delegate_to: localhost
+      register: local_process
+      changed_when: false
+
+    - name: show localhost processes
+      debug:
+        msg: "{{ local_process.stdout }}" 
+
+    - name: show {{ ansible_hostname }} processes
+      debug:
+        msg: "{{ remote_process.stdout }}" 

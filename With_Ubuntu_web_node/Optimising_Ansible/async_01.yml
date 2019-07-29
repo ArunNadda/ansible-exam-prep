@@ -1,0 +1,8 @@
+---
+- name: use of async
+  hosts: all
+  tasks:
+    - name: set waiting limit
+      command: /bin/sleep 15
+      async: 10
+      poll: 5

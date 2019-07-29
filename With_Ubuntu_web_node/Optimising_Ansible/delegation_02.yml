@@ -1,0 +1,27 @@
+---
+- name: delegation to aoutside inv
+  hosts: localhost
+  become: true
+  tasks:
+    - name: add another host
+      add_host:
+        name: proxy
+        ansible_host: 10.0.10.195
+        ansible_user: ubuntu
+
+    - name: show where the command is running
+      command: hostname
+      delegate_to: proxy
+      register: command1
+
+    - name: show how facts are used
+      command: echo "this is on {{ inventory_hostname }}"
+      delegate_to: proxy
+      register: output
+
+
+    - debug:
+        msg: "{{ command1.stdout }}"
+   
+    - debug:
+        msg: "{{ output.stdout }}"

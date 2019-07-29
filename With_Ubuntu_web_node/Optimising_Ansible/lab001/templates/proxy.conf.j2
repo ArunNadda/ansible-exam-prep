@@ -1,0 +1,4 @@
+#{{ ansible_managed }}"
+
+ProxyPass "/external" "http://{{ ansible_fqdn }}"
+ProxyPassReserve "/external" "http://{{ ansible_fqdn }}"

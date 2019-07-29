@@ -1,0 +1,19 @@
+---
+- name: download a large file
+  hosts: db
+  become: true
+  tasks:
+    - name: task to download file
+      get_url:
+        url: https://www.test.com/pub/verybigfile.zip
+        dest: /tmp
+      async: 7200
+      poll: 0
+      register: bkgrnd_download
+    - name: wait for download to complete
+      async_status:
+        jid: "{{ bkgrnd_download.ansible_job_id }}"
+      register: job_result
+      until: job_result.finished
+      retries: 30
+      delay: 120
