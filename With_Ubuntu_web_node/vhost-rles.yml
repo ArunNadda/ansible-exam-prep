@@ -1,0 +1,17 @@
+---
+- name: use vhost role
+  hosts: web
+  become: true
+  
+  pre_tasks:
+    - name: this is pre-task
+      debug:
+        msg: 'Begining of config task.'
+
+  roles:
+    - myvhost
+
+  post_tasks:
+    - name: this is post-task
+      debug: 
+        msg: 'web server config is complete'

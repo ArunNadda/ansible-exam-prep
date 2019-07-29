@@ -1,0 +1,8 @@
+---
+- name: play for motd
+  hosts: all
+  become: true
+  
+  roles:
+    - role: motd
+      system_owner: systemadmin@systemadmin.com

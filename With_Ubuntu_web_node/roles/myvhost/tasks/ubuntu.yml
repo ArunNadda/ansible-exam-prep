@@ -1,0 +1,25 @@
+---
+# tasks file for myvhost
+- name: install httpd
+  package: 
+    name: apache2
+    state: installed
+- name: start httpd
+  service:
+    name: apache2
+    enabled: true
+    state: started
+
+- name: copy html content
+  copy:
+    src: html/
+    dest: "/var/www/vhosts/{{ ansible_hostname }}"
+
+- name: copy template vhost file
+  template:
+    src: vhost.conf.j2
+    dest: /etc/apache2/conf-available/vhost.conf
+    owner: root
+    group: root
+    mode: 0644
+  notify: restart_apache2

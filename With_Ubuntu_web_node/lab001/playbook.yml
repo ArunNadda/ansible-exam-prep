@@ -1,0 +1,26 @@
+---
+- name: playbook to install web on ubuntu and centos
+  hosts: web
+  become: true
+  tasks:
+    - name: make sure facts.d dire is present
+      file:
+        path: /etc/ansible/facts.d
+        state: directory
+      
+    - name: copy custom facts to nodes
+      copy: 
+        src: facts.d/custom_{{ ansible_distribution }}.fact
+        dest: /etc/ansible/facts.d/custom.fact
+        mode: 640 
+  
+    - name: reload facts
+      setup:
+
+    - name: isntall pkgs
+      package:
+        name: "{{ item }""
+        state: installed
+      with_items: 
+        - "{{ ansible_local.custom.pkg }}"
+  

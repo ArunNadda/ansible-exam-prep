@@ -1,0 +1,8 @@
+---
+- name: import task for centos
+  import_tasks: centos.yml
+  when: ansible_distribution == 'CentOS'
+   
+- name: import task for ubuntu
+  import_tasks: ubuntu.yml
+  when: ansible_distribution == 'Ubuntu'

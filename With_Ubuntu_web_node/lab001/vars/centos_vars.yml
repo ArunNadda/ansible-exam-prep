@@ -1,0 +1,12 @@
+---
+mypackage:
+  web: httpd
+  ftp: vsftpd
+  db: mariadb-server
+  fw: firewalld
+
+mysvc:
+  web: httpd
+  ftp: vsftpd
+  db: mariadb
+  fw: firewalld

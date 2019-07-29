@@ -1,0 +1,3 @@
+---
+# tasks file for motd
+- import_tasks: motd.yml

@@ -1,0 +1,4 @@
+---
+# defaults file for myfirewall
+
+fw_service: ssh
