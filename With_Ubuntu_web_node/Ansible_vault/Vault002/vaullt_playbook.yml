@@ -1,0 +1,20 @@
+---
+- name: playbook to use vault
+  hosts: all
+  vars_files: 
+    - vault_var.yml
+    - vault_var2.yml
+    - vault_var3.yml
+
+  tasks:
+    - name: show the variable - from vault_var.yml
+      debug:
+        var: external_var_pass
+
+    - name: show the variable 2 - from vault_var2.yml
+      debug:
+        var: var_02
+
+    - name: show the variables - from vault_var3.yml
+      debug:
+        var: user_pass
